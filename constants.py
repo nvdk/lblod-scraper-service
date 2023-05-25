@@ -1,0 +1,5 @@
+RESOURCE_BASE = "http://data.lblod.info/"
+SCRAPE_JOB_TYPE = "http://lblod.data.gift/ns/ScrapeJob"
+SCRAPE_CAMPAIGN_JOB_TYPE = "http://lblod.data.gift/ns/ScrapeCampaignJob"
+SCRAPE_GRAPH = "http://mu.semte.ch/graphs/jobs-graph"
+EXTRACTION_GRAPH = "http://mu.semte.ch/graphs/extracted-triples-graph"

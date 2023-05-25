@@ -1,0 +1,9 @@
+Scrapy==2.6.3
+itemloaders==1.0.4
+itemadapter==0.4.0
+SPARQLWrapper==1.8.5
+Flask==2.0.2
+uuid==1.30
+lxml==4.6.4
+requests==2.27.1
+apscheduler==3.9.1
