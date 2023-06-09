@@ -1,5 +1,7 @@
 from scrapy import Spider
 from scrapy.loader import ItemLoader
+from scrapy.http.response.text import TextResponse
+from scrapy.exceptions import IgnoreRequest
 from rdflib import Graph, Namespace
 from helpers import logger
 
@@ -14,6 +16,8 @@ class LBLODSpider(Spider):
     name = "LBLODSpider"
     job = None 
     def parse(self, response):
+        if not isinstance(response, TextResponse):
+            raise IgnoreRequest("ignoring non text response")
         # store page itself
         job = create_scrape_job(response.url, self.job)
         page = ItemLoader(item=Page(), response=response)
@@ -32,5 +36,8 @@ class LBLODSpider(Spider):
             href = element.xpath('@href').get()
             property_value = element.xpath('@property').get()
             if any(value in property_value for value in interesting_properties):
-                url = response.urljoin(href)
-                yield response.follow(url)
+                if not href.endswith('.pdf'):
+                    url = response.urljoin(href)
+                    yield response.follow(url)
+                else:
+                    logger.info(f'ignoring pdf link {href}')
