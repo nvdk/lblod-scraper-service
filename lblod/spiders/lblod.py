@@ -14,7 +14,6 @@ class LBLODSpider(Spider):
     name = "LBLODSpider"
     job = None 
     def parse(self, response):
-        print(response.url)
         # store page itself
         job = create_scrape_job(response.url, self.job)
         page = ItemLoader(item=Page(), response=response)
@@ -22,19 +21,16 @@ class LBLODSpider(Spider):
         page.add_value("contents", response.text)
         page.add_value("job", job["uri"])
         yield page.load_item()
-
-        # follow possible links
-        g = Graph()
-        g.bind("besluit", BESLUIT)
-        g.bind("lblodBesluit", LBBESLUIT)
-        g.parse(data=response,format='rdfa')
-        for s, p, o in g.triples(None, BESLUIT.heeftAgenda, None ):
-            yield response.follow(o)
-        for s, p, o in g.triples(None, BESLUIT.heeftNotulen, None ):
-            yield response.follow(o)
-        for s, p, o in g.triples(None, BESLUIT.heeftBesluitenlijst, None ):
-            yield response.follow(o)
-        for s, p, o in g.triples(None, BESLUIT.heeftUittreksel, None ):
-            yield response.follow(o)
-        for s, p, o in g.triples(None, LBBESLUIT.linkToPublicationm, None):
-            yield response.follow(o)
+        interesting_properties = [
+            'heeftNotulen',
+            'heeftAgenda',
+            'heeftBesluitenlijst',
+            'heeftUittreksel',
+            'linkToPublication'
+        ]
+        for element in response.xpath('//a[@href and @property]'):
+            href = element.xpath('@href').get()
+            property_value = element.xpath('@property').get()
+            if any(value in property_value for value in interesting_properties):
+                url = response.urljoin(href)
+                yield response.follow(url)
