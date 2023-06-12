@@ -36,7 +36,6 @@ class LBLODSpider(Spider):
             if any(value in property_value for value in interesting_properties):
                 if not href.endswith('.pdf'):
                     url = response.urljoin(href)
-                    print("creating new rdo")
                     create_remote_data_object(self.collection, url)
                     yield response.follow(url)
                 else:
