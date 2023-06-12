@@ -5,7 +5,7 @@ from itemloaders.processors import MapCompose, TakeFirst
 class Page(Item):
     url = Field(input_processor=MapCompose(str.strip), output_processor=TakeFirst())
     contents = Field(output_processor=TakeFirst())
-    job = Field(output_processor=TakeFirst())
+    rdo = Field(output_processor=TakeFirst())
 
     uuid = Field(output_processor=TakeFirst())
     size = Field(output_processor=TakeFirst())
