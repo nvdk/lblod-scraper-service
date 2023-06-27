@@ -60,7 +60,7 @@ def create_results_container(task_uri, collection_uri):
         $task task:resultsContainer $result_container.
         $result_container a nfo:DataContainer;
                           mu:uuid $uuid;
-                          task:hasHarvestingCollection $collection.
+                          task:hasFile ?rdo.
       }
     }
     WHERE {
