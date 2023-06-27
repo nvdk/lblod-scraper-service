@@ -47,6 +47,9 @@ INSERT  {
             dbpedia:fileExtension $extension .
         $data_source_uri adms:status $new_status.
         $data_source_uri dct:modified $created.
+        $data_source_uri a nfo:FileDataObject;
+                         nfo:fileName $physical_name;
+                         nfo:fileSize $size.
     }
 }
 WHERE {
