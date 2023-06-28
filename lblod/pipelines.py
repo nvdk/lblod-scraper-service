@@ -9,6 +9,7 @@ from constants import DEFAULT_GRAPH
 from escape_helpers import sparql_escape_uri
 from sudo_query import update_sudo
 from helpers import logger
+import gzip
 
 from .file import construct_insert_file_query, STORAGE_PATH
 from constants import DEFAULT_GRAPH, RESOURCE_BASE, TASK_STATUSES
@@ -75,19 +76,17 @@ class Pipeline:
             return item
 
         _uuid = str(uuid.uuid4())
-        physical_file_name = f"{_uuid}.html"
+        physical_file_name = f"{_uuid}.html.gz"
         physical_file_path = os.path.join(self.storage_path, physical_file_name)
-        with open(physical_file_path, write_mode) as f:
-            f.write(contents)
-            f.seek(0, os.SEEK_END) # TODO: check if this can be replaced by return value of write
-            size = f.tell()
-            file_created = datetime.datetime.now()
-
+        with gzip.open(physical_file_path, write_mode) as f:
+            f.write(contents.encode())
+        size = os.stat(physical_file_path).st_size
+        file_created = datetime.datetime.now()
         adapter["uuid"] = _uuid
         adapter["size"] = size
         adapter["file_created"] = file_created
         adapter["extension"] = "html"
-        adapter["format"] = "text/html; charset=utf-8"
+        adapter["format"] = "application/gzip"
         adapter["physical_file_name"] = physical_file_name
         adapter["physical_file_path"] = physical_file_path
         try:
