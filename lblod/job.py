@@ -89,7 +89,7 @@ def update_task_status (task, status, graph=DEFAULT_GRAPH):
       GRAPH $graph {
         $subject a task:Task.
         $subject adms:status ?status .
-        OPTIONAL { ?subject dct:modified ?modified. }
+        OPTIONAL { $subject dct:modified ?modified. }
       }
     }
     """)
