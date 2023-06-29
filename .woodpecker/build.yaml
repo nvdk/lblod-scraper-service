@@ -1,6 +1,6 @@
-pipeline:
+steps:
   push-latest:
-    image: plugins/docker
+    image: woodpeckerci/plugin-docker-buildx
     settings:
       repo: nvdk/lblod-scraper
       tags: latest
@@ -8,4 +8,4 @@ pipeline:
     secrets: [docker_username, docker_password]
 when:
   branch: master
-  event: [push, tag, deployment]
+  event: push
