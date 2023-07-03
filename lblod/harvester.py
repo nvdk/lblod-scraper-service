@@ -8,6 +8,13 @@ import datetime
 
 from constants import DEFAULT_GRAPH, RESOURCE_BASE, FILE_STATUSES
 
+def ensure_remote_data_object(collection, url):
+    rdo = get_remote_data_object(collection, url)
+    if rdo:
+        return rdo
+    else:
+        return create_remote_data_object(collection, url)
+
 def create_remote_data_object(collection, url):
     query_template = Template("""
     PREFIX    adms: <http://www.w3.org/ns/adms#>
@@ -45,7 +52,12 @@ def create_remote_data_object(collection, url):
 
     )
     update_sudo(q_string)
-
+    return {
+        'uuid': uuid,
+        'url': url,
+        'uri': uri,
+        'status': FILE_STATUSES['READY']
+    }
 
 def create_results_container(task_uri, collection_uri):
     query_template = Template("""
@@ -84,7 +96,6 @@ def create_results_container(task_uri, collection_uri):
         task = sparql_escape_uri(task_uri)
     )
     update_sudo(query_s)
-
 """
 get remote data object in a harvesting collection that matches remote url. Expects 1 RDO
 """
@@ -126,6 +137,8 @@ def get_remote_data_object(collection_uri, remote_url):
             'uri': uri,
             'status': status
         }
+    elif len(bindings) == 0:
+        return None
     else:
         raise Exception(f"Unexpected result {results}")
 
